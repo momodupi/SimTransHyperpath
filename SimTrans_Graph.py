@@ -152,11 +152,3 @@ class SimTrans_Graph(object):
 
 
 
-
-
-
-
-g = SimTrans_Graph()
-g.create_random_graph(10)
-#print(g.get_edge(1,2))
-g.get_all_paths(1,2)
