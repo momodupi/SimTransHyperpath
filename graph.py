@@ -3,22 +3,21 @@
 
 import numpy as np
 
-class SimTrans(object):
-    
-
+class SimTrans_Graph(object):
     def __init__(self):
         self.n_dirc = {}
         self.n_path = []
+        self.n_node = []
+        self.n_edge = []
 
     # add a new node
     def add_node(self, n):
         self.n_dirc.update({n:[]})
 
-    def add_subgraph(self, n):
-        self.n_dirc.update(n)
-
+    # return all added nodes
     def get_all_nodes(self):
-        return [d for d in self.n_dirc]
+        self.n_node = [d for d in self.n_dirc]
+        return self.n_node
 
     # add a new edge
     def add_edge(self, n1, n2):
@@ -28,41 +27,76 @@ class SimTrans(object):
         if n2 not in self.n_dirc:
             self.add_node(n2)
         
-        self.n_dirc[n1].append(n2)
+        self.n_dirc[n1].append((n2,()))
 
-    def find_edge(self, n1, n2):
+    # add a new weighted edge
+    def add_w_edge(self, n1, n2, w):
+        if n1 not in self.n_dirc:
+            self.add_node(n1)
+
+        if n2 not in self.n_dirc:
+            self.add_node(n2)
+        
+        if n2 not in self.n_dirc[n1]:
+            self.n_dirc[n1].append((n2,w))
+
+    # update weight to an edge if exist
+    def update_w_edge(self, n1, n2, w):
+        #self.remove_edge(n1, n2)
+        self.add_w_edge(n1, n2, w)
+
+
+    # return an edge if exists
+    def get_edge(self, n1, n2):
         if (n1 not in self.n_dirc) or (n2 not in self.n_dirc):
             return ()
+
+        else:
+            for e in self.n_dirc[n1]:
+                if e[0] == n2:
+                    return (n1,e)
+        '''
         elif n2 in self.n_dirc[n1]:
             return (n1, n2)
         elif n1 in self.n_dirc[n2]:
             return (n2, n1)
         else:
             return ()
+        '''
+
+    # return all edges
+    def get_all_edges(self):
+        self.n_edge = []
+        for i in self.n_dirc:
+            e = [ (i,d) for d in self.n_dirc[i] ]
+            self.n_edge.append(e)
+        return self.n_edge
+
 
     # remove node with corresponding edges
     def remove_node(self, n):
         for i in self.n_dirc:
-            try:
-                self.n_dirc[i].remove(n)
-            except:
-                pass
+            self.n_dirc[i] = [i for i in self.n_dirc[i] if i[0] != n]
 
         try:
             del self.n_dirc[n]
         except KeyError:
             pass
 
+    # remove an edge if exists
     def remove_edge(self, n1, n2):
-        if n2 in self.n_dirc[n1]:
-            self.n_dirc[n1].pop(self.n_dirc[n1].index(n2))
+        self.n_dirc[n1] = [i for i in self.n_dirc[n1] if i[0] != n2]
 
-    # print the graph
+    # print the entire graph
     def print_graph(self):
-        print(self.n_dirc)
+        #print(self.n_dirc)
+        print("Graph: ")
+        for i in self.n_dirc:
+            print("node{}: {}".format(int(i), self.n_dirc[i]))
 
-    # generate the graph with matrix
-    def generate_graph(self, M):
+
+    # create a graph with matrix
+    def create_graph(self, M, W):
         row, col = M.shape
         if row != col:
             print('matrix error!')
@@ -72,78 +106,57 @@ class SimTrans(object):
                 self.add_node(n_r)
                 for n_c in range(col):
                     if M[n_r][n_c] == 1 and n_r != n_c:
-                        self.add_edge(n_r, n_c)
+                        self.add_w_edge(n_r, n_c, W[n_r][n_c])
+        #self.print_graph()
+        self.get_all_nodes()
+        self.get_all_edges()
         self.print_graph()
     
-    def generate_complete_tree_graph(self, m_size):
+    # generate a complete graph with size
+    def create_complete_tree_graph(self, m_size):
         m = np.ones((m_size, m_size), dtype=int)
-        self.generate_graph(m)
+        self.create_graph(m, m)
 
-    def generate_random_graph(self, m_size):
+    # create a random graph with size
+    def create_random_graph(self, m_size):
         m = np.random.randint(2, size=(m_size, m_size))
-        self.generate_graph(m)
+        self.create_graph(m, m)
 
-    def replace_node(self, n1, rn):
-        for i in self.n_dirc:
-            self.n_dirc[i] = [ rn if l==n1 else l for l in self.n_dirc[i] ]
-        if n1 in self.n_dirc:
-            self.n_dirc[rn] = self.n_dirc[n1]
-            del self.n_dirc[n1]
 
-        self.print_graph()
-
-    def generate_path(self, n1, n2, passed, path): 
+    # get a path
+    def get_path(self, n1, n2, passed, path): 
         passed[n1]= True
-        path.append(n1) 
+        path.append(n1)
   
         if n1 == n2:
             self.n_path.append(path[:])
         else:
             for i in self.n_dirc[n1]: 
-                if passed[i] == False: 
-                    self.generate_path(i, n2, passed, path) 
-                      
-        path.pop()
+                n = i[0]
+                if passed[n] == False: 
+                    #passed[n]= True
+                    #path.append( self.get_edge(n1,n) )
+                    self.get_path(n, n2, passed, path) 
+        path.pop()     
         passed[n1]= False
    
-
-    def generate_all_path(self, n1, n2): 
+    # get all path
+    def get_all_paths(self, n1, n2): 
         passed = [ False for i in self.get_all_nodes() ]
         path = [] 
         self.n_path = []
-        self.generate_path(n1, n2, passed, path)
+        self.get_path(n1, n2, passed, path)
         
         for i in self.n_path:
             print(i)
 
 
-'''
-    def generate_all_path(self, n1, n2):
-        passed = [ False for i in self.get_all_nodes() ]
-        path = []
-        p_list = []
-        p_list.append(self.generate_path(n1, n2, path, passed))
-
-    def generate_path(self, n1, n2, path, passed):
-        passed[n1] = True
-        path.append(n1)
-
-        if n1 == n2:
-            return path
-        if n1 not in self.n_dirc:
-            return path
-        for n in self.n_dirc[n1]:
-            if passed[n] == False: 
-                path = self.generate_path(n, n2, path, passed)
-        path.pop()
-        passed[n1] = False
-        return path
-'''
 
 
-g = SimTrans()
-g.generate_random_graph(10)
-print(g.find_edge(2,3))
 
-#print(g.generate_path(0,3))
-g.generate_all_path(1,2)
+
+
+g = SimTrans_Graph()
+g.create_random_graph(10)
+#print(g.get_edge(1,2))
+g.get_all_paths(1,2)
