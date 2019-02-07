@@ -19,13 +19,14 @@ w_m = np.zeros((7,7))
 #g.create_random_graph(10)
 g.create_graph(g_m, w_m)
 
-g.get_all_paths(0,6)
+#g.get_all_paths(0,6)
 
 #g.update_w_edge(0,1,g.convert_w_edge(5,4,3))
 
 
 g.update_w_all_edges(g_m, g_m, g_m)
 
-#g.print_graph()
-
-print(g.get_all_edges())
+g.print_graph()
+print(g.get_all_paths(0,6))
+print(g.get_paths_cost(0,6))
+print(g.get_decision(0,6))
