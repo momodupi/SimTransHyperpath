@@ -42,9 +42,25 @@ class SimTrans_Graph(object):
 
     # update weight to an edge if exist
     def update_w_edge(self, n1, n2, w):
-        #self.remove_edge(n1, n2)
+        self.remove_edge(n1, n2)
         self.add_w_edge(n1, n2, w)
 
+    # convert edge flow, time, cost into dictionary
+    def convert_w_edge(self, m_f, m_t, m_c):
+        return {"flow": m_f,"time": m_t,"cost": m_c}
+
+    # conver all edges weighe with matrices
+    def update_w_all_edges(self, m_f, m_t, m_c):
+        #e_s = np.array(self.n_edge).flatten('F')
+        for n_list in self.n_edge:
+            for e_list in n_list:
+                i = e_list[0]
+                j = e_list[1][0]
+                #i = e[0]
+                #j = e[1][0]
+                #print('{},{}'.format(i,j))
+                #print(e)
+                self.update_w_edge(i, j, self.convert_w_edge(m_f[i][j], m_t[i][j], m_c[i][j]))
 
     # return an edge if exists
     def get_edge(self, n1, n2):
@@ -149,6 +165,5 @@ class SimTrans_Graph(object):
         
         for i in self.n_path:
             print(i)
-
 
 
