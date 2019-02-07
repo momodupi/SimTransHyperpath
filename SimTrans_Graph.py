@@ -47,7 +47,7 @@ class SimTrans_Graph(object):
 
     # convert edge flow, time, cost into dictionary
     def convert_w_edge(self, m_f, m_t, m_c):
-        return {"flow": m_f,"time": m_t,"cost": m_c}
+        return {"cost": self.convert_cost(m_f, m_t, m_c) ,"flow": m_f,"time": m_t,"fee": m_c}
 
     # conver all edges weighe with matrices
     def update_w_all_edges(self, m_f, m_t, m_c):
@@ -162,8 +162,39 @@ class SimTrans_Graph(object):
         path = [] 
         self.n_path = []
         self.get_path(n1, n2, passed, path)
+
+        return self.n_path
+    
+    # get the cost for each path
+    def get_paths_cost(self, n1, n2):
+        p = self.get_all_paths(n1, n2)
+        w_list = []
+        for p_list in p:
+            #n = len(p_list)
+            w_c = 0
+            for i in range(0,len(p_list)-1):
+                w_c = w_c + self.get_edge( p_list[i], p_list[i+1] )[1][1].get('cost')
+            w_list.append(w_c)
+        return w_list
+
+    # get decision mode
+    def get_decision(self, n1, n2):
+        c_list = self.get_paths_cost(n1, n2)
+        #d_list = [ float(i/sum(c_list)) for i in c_list ]
+        #print(d_list)
+        c_list = [ np.exp(-i) for i in c_list ]
+        return [ float( i/sum(c_list)) for i in c_list ]
         
-        for i in self.n_path:
-            print(i)
+    # cost function
+    def convert_cost(self, m_f, m_t, m_c):
+        # define the cost function
+        # i,e. quadritic cost
+        return m_c*m_f + m_t*(m_f*m_f)
+
+
+
+    # input one passenger
+    def single_passenger(self):
+        a=0        
 
 
