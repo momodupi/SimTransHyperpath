@@ -1,32 +1,59 @@
 from SimTrans_Graph import SimTrans_Graph
+from SimTrans_Passenger import SimTrans_Passenger
+from SimTrans_Simulator import SimTrans_Simulator
 
 import numpy as np
 
 g = SimTrans_Graph()
 
+# a graph with original 0 and destination 6
+g_m = np.array([
+    [0,1,1,0,0,0,1],
+    [0,0,1,1,0,0,0],
+    [0,1,0,0,0,1,0],
+    [0,0,0,0,1,0,0],
+    [0,0,0,0,0,1,1],
+    [0,0,0,0,1,0,1],
+    [0,0,0,0,0,0,0]
+])
 
-g_m = np.zeros((7,7))
-g_m[0,:]=np.array([0,1,1,0,0,0,1])
-g_m[1,:]=np.array([0,0,1,1,0,0,0])
-g_m[2,:]=np.array([0,1,1,0,0,1,0])
-g_m[3,:]=np.array([0,0,0,0,1,0,0])
-g_m[4,:]=np.array([0,0,0,0,0,1,1])
-g_m[5,:]=np.array([0,0,0,0,1,0,1])
-g_m[6,:]=np.array([0,0,0,0,0,0,0])
+# initial flow
+m_f = np.zeros((7,7))
+
+# time consumption
+m_t = np.array([
+    [0,20,5,0,0,0,10],#0
+    [0,0,5,20,0,0,0],#1
+    [0,5,0,0,0,7,0],#2
+    [0,0,0,15,0,0],#3
+    [0,0,0,0,0,5,15],#4
+    [0,0,0,0,5,0,2],#5
+    [0,0,0,0,0,0,0]#6
+])
+
+# pecuniary consumption
+m_c = np.array([
+    [0,2,8,0,0,0,30],#0
+    [0,0,0,2,0,0,0],#1
+    [0,0,0,0,0,7,0],#2
+    [0,0,0,0,2,0,0],#3
+    [0,0,0,0,0,0,2],#4
+    [0,0,0,0,0,0,8],#5
+    [0,0,0,0,0,0,0]#6
+])
+
+# create a graph
+g.create_graph(g_m)
+
+# update the flow and cost
+g.update_w_all_edges(m_f, m_t, m_c)
+
+# set the simulator with graph 
+m = SimTrans_Simulator(g, 0, 6)
+
+# initial passengers: 50
+# arriving passengers at each time: 150
+# running time: 1000
+m.run(1000, 50, 50)
 
 
-w_m = np.zeros((7,7))
-#g.create_random_graph(10)
-g.create_graph(g_m, w_m)
-
-#g.get_all_paths(0,6)
-
-#g.update_w_edge(0,1,g.convert_w_edge(5,4,3))
-
-
-g.update_w_all_edges(g_m, g_m, g_m)
-
-g.print_graph()
-print(g.get_all_paths(0,6))
-print(g.get_paths_cost(0,6))
-print(g.get_decision(0,6))

@@ -46,7 +46,7 @@ class SimTrans_Graph(object):
         self.add_w_edge(n1, n2, w)
 
     # convert edge flow, time, cost into dictionary
-    def convert_w_edge(self, m_f, m_t, m_c):
+    def convert_w_edge(self, m_f=0, m_t=0, m_c=0):
         return {"cost": self.convert_cost(m_f, m_t, m_c) ,"flow": m_f,"time": m_t,"fee": m_c}
 
     # conver all edges weighe with matrices
@@ -112,7 +112,7 @@ class SimTrans_Graph(object):
 
 
     # create a graph with matrix
-    def create_graph(self, M, W):
+    def create_graph(self, M):
         row, col = M.shape
         if row != col:
             print('matrix error!')
@@ -122,7 +122,7 @@ class SimTrans_Graph(object):
                 self.add_node(n_r)
                 for n_c in range(col):
                     if M[n_r][n_c] == 1 and n_r != n_c:
-                        self.add_w_edge(n_r, n_c, W[n_r][n_c])
+                        self.add_w_edge(n_r, n_c, 0)
         #self.print_graph()
         self.get_all_nodes()
         self.get_all_edges()
@@ -131,12 +131,12 @@ class SimTrans_Graph(object):
     # generate a complete graph with size
     def create_complete_tree_graph(self, m_size):
         m = np.ones((m_size, m_size), dtype=int)
-        self.create_graph(m, m)
+        self.create_graph(m)
 
     # create a random graph with size
     def create_random_graph(self, m_size):
         m = np.random.randint(2, size=(m_size, m_size))
-        self.create_graph(m, m)
+        self.create_graph(m)
 
 
     # get a path
@@ -176,25 +176,25 @@ class SimTrans_Graph(object):
                 w_c = w_c + self.get_edge( p_list[i], p_list[i+1] )[1][1].get('cost')
             w_list.append(w_c)
         return w_list
-
-    # get decision mode
-    def get_decision(self, n1, n2):
-        c_list = self.get_paths_cost(n1, n2)
-        #d_list = [ float(i/sum(c_list)) for i in c_list ]
-        #print(d_list)
-        c_list = [ np.exp(-i) for i in c_list ]
-        return [ float( i/sum(c_list)) for i in c_list ]
-        
+      
     # cost function
     def convert_cost(self, m_f, m_t, m_c):
         # define the cost function
         # i,e. quadritic cost
-        return m_c*m_f + m_t*(m_f*m_f)
+        return m_c + m_t + 0.01*m_t*(m_f*m_f)
+    
+    # update flow
+    def update_flow(self, n1, n2, f):
+        e = self.get_edge(n1, n2)
+        #print('original edge: {}'.format(e))
+        e[1][1].update({'flow': f})
+        e[1][1].update({'cost': self.convert_cost( e[1][1].get('flow'), e[1][1].get('time'), e[1][1].get('fee') )})
 
+        self.update_w_edge(n1, n2, e[1][1])
+        #print('new edge: {}'.format(self.get_edge(n1, n2)))
 
-
-    # input one passenger
-    def single_passenger(self):
-        a=0        
-
-
+    # get flow
+    def get_flow(self, n1, n2):
+        e = self.get_edge(n1, n2)
+        #print('original edge: {}'.format(e))
+        return e[1][1].get('flow')
