@@ -52,8 +52,8 @@ g.update_w_all_edges(m_f, m_t, m_c)
 m = SimTrans_Simulator(g, 0, 6)
 
 # initial passengers: 50
-# arriving passengers at each time: 150
-# running time: 1000
-m.run(500, 50, 50)
+# arriving passengers at each time: 50
+# running time: 7200
+m.run(7200, 50, 50)
 
 
