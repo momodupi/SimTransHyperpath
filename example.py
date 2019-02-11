@@ -21,7 +21,7 @@ g_m = np.array([
 m_f = np.zeros((7,7))
 
 # time consumption
-m_t = np.array([
+m_t = 60*np.array([
     [0,20,5,0,0,0,10],#0
     [0,0,5,20,0,0,0],#1
     [0,5,0,0,0,7,0],#2
@@ -54,6 +54,6 @@ m = SimTrans_Simulator(g, 0, 6)
 # initial passengers: 50
 # arriving passengers at each time: 150
 # running time: 1000
-m.run(1000, 50, 50)
+m.run(500, 50, 50)
 
 
