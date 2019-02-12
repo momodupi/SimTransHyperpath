@@ -23,20 +23,16 @@ class SimTrans_Graph(object):
     def add_edge(self, n1, n2):
         if n1 not in self.n_dirc:
             self.add_node(n1)
-
         if n2 not in self.n_dirc:
             self.add_node(n2)
-        
         self.n_dirc[n1].append((n2,()))
 
     # add a new weighted edge
     def add_w_edge(self, n1, n2, w):
         if n1 not in self.n_dirc:
             self.add_node(n1)
-
         if n2 not in self.n_dirc:
             self.add_node(n2)
-        
         if n2 not in self.n_dirc[n1]:
             self.n_dirc[n1].append((n2,w))
 
@@ -56,29 +52,16 @@ class SimTrans_Graph(object):
             for e_list in n_list:
                 i = e_list[0]
                 j = e_list[1][0]
-                #i = e[0]
-                #j = e[1][0]
-                #print('{},{}'.format(i,j))
-                #print(e)
                 self.update_w_edge(i, j, self.convert_w_edge(m_f[i][j], m_t[i][j], m_c[i][j]))
 
     # return an edge if exists
     def get_edge(self, n1, n2):
         if (n1 not in self.n_dirc) or (n2 not in self.n_dirc):
             return ()
-
         else:
             for e in self.n_dirc[n1]:
                 if e[0] == n2:
                     return (n1,e)
-        '''
-        elif n2 in self.n_dirc[n1]:
-            return (n1, n2)
-        elif n1 in self.n_dirc[n2]:
-            return (n2, n1)
-        else:
-            return ()
-        '''
 
     # return all edges
     def get_all_edges(self):
@@ -93,7 +76,6 @@ class SimTrans_Graph(object):
     def remove_node(self, n):
         for i in self.n_dirc:
             self.n_dirc[i] = [i for i in self.n_dirc[i] if i[0] != n]
-
         try:
             del self.n_dirc[n]
         except KeyError:
@@ -105,7 +87,6 @@ class SimTrans_Graph(object):
 
     # print the entire graph
     def print_graph(self):
-        #print(self.n_dirc)
         print("Graph: ")
         for i in self.n_dirc:
             print("node{}: {}".format(int(i), self.n_dirc[i]))
@@ -115,7 +96,7 @@ class SimTrans_Graph(object):
     def create_graph(self, M):
         row, col = M.shape
         if row != col:
-            print('matrix error!')
+            print('error matrix input!')
             return
         else:
             for n_r in range(row):
@@ -123,20 +104,17 @@ class SimTrans_Graph(object):
                 for n_c in range(col):
                     if M[n_r][n_c] == 1 and n_r != n_c:
                         self.add_w_edge(n_r, n_c, 0)
-        #self.print_graph()
         self.get_all_nodes()
         self.get_all_edges()
         self.print_graph()
     
     # generate a complete graph with size
     def create_complete_tree_graph(self, m_size):
-        m = np.ones((m_size, m_size), dtype=int)
-        self.create_graph(m)
+        self.create_graph(np.ones( (m_size, m_size), dtype=int) )
 
     # create a random graph with size
     def create_random_graph(self, m_size):
-        m = np.random.randint(2, size=(m_size, m_size))
-        self.create_graph(m)
+        self.create_graph( np.random.randint(2, size=(m_size, m_size)) )
 
 
     # get a path
@@ -162,7 +140,6 @@ class SimTrans_Graph(object):
         path = [] 
         self.n_path = []
         self.get_path(n1, n2, passed, path)
-
         return self.n_path
     
     # get the cost for each path
@@ -170,7 +147,6 @@ class SimTrans_Graph(object):
         p = self.get_all_paths(n1, n2)
         w_list = []
         for p_list in p:
-            #n = len(p_list)
             w_c = 0
             for i in range(0,len(p_list)-1):
                 w_c = w_c + self.get_edge( p_list[i], p_list[i+1] )[1][1].get('cost')
@@ -181,20 +157,16 @@ class SimTrans_Graph(object):
     def convert_cost(self, m_f, m_t, m_c):
         # define the cost function
         # i,e. quadritic cost
-        return m_c + m_t + 0.01*m_t*(m_f*m_f)
+        return m_c + m_t + 0.01*(m_f*m_f)
     
     # update flow
     def update_flow(self, n1, n2, f):
         e = self.get_edge(n1, n2)
-        #print('original edge: {}'.format(e))
         e[1][1].update({'flow': f})
         e[1][1].update({'cost': self.convert_cost( e[1][1].get('flow'), e[1][1].get('time'), e[1][1].get('fee') )})
-
         self.update_w_edge(n1, n2, e[1][1])
-        #print('new edge: {}'.format(self.get_edge(n1, n2)))
+
 
     # get flow
     def get_flow(self, n1, n2):
-        e = self.get_edge(n1, n2)
-        #print('original edge: {}'.format(e))
-        return e[1][1].get('flow')
+        return self.get_edge(n1, n2)[1][1].get('flow')

@@ -53,7 +53,10 @@ m = SimTrans_Simulator(g, 0, 6)
 
 # initial passengers: 50
 # arriving passengers at each time: 50
-# running time: 7200
-m.run(7200, 50, 50)
+# running time: 3600
+m.run(0, 3600, 5, 5)
 
+# plot the flow of each edge
+m.plot_all_edge_flow(0,3600)
+m.plot_show()
 

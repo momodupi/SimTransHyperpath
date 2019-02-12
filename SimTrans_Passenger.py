@@ -11,15 +11,11 @@ class SimTrans_Passenger(object):
         self.s_time = time
 
         self.path, self.t_time = self.select_path()
-        #print(self.path)
         self.pos = [0, self.path[1]]
-        #print(self.pos)
 
         self.t_time = [0] + self.t_time
         for i in range(1, len(self.t_time)):
             self.t_time[i] = self.t_time[i-1]+self.t_time[i]
-
-        #print(self.t_time)
         
     # decision mode
     def get_decision(self, n1, n2):

@@ -1,27 +1,77 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from SimTrans_Graph import SimTrans_Graph
 from SimTrans_Passenger import SimTrans_Passenger
+
+
+import numpy as np
+import matplotlib.pyplot as plt
 
 class SimTrans_Simulator(object):
     def __init__(self, g, o, d):
         self.graph = g
         self.ori = o
         self.des = d
-        self.s_time = 0
         self.edge_flow = {}
+        self.edge_flow_history = []
         self.p_list = []
 
+        self.plot_num = 0
 
-    def run(self, time, init_num, step_num):
+    # plot flow for edge (n1, n2)
+    def plot_edge_flow(self, n1, n2, s_time, e_time):
+        self.plot_num = self.plot_num + 1
+        plt.figure(self.plot_num)
+        k = np.arange(s_time,e_time,1)
+        flow_plot = np.zeros(e_time-s_time)
+
+        for i in range(len(self.edge_flow_history)):
+            flow_plot[i] = self.edge_flow_history[i][(n1,n2)]
+
+        plt.plot(k, flow_plot[s_time:e_time], label='{}'.format((n1,n2)))
+        #plt.legend(loc='upper right')
+        plt.xlabel('time (s)')
+        plt.ylabel('Flow')
+        plt.title('Flow of edge {}'.format((n1,n2)))
+        #plt.show()
+        
+    # plot flow for each path
+    def plot_all_edge_flow(self, s_time, e_time):
+        self.plot_num = self.plot_num + 1
+        plt.figure(self.plot_num)
+        k = np.arange(s_time,e_time,1)
+        flow_plot = np.zeros((len(self.edge_flow), e_time-s_time))
+
+        for i in range(len(self.edge_flow_history)):
+            e_num = 0
+            for e, f in self.edge_flow_history[i].items():
+                flow_plot[ e_num ][i] = f
+                e_num = e_num + 1
+
+        for e in range(0, len(self.edge_flow)):
+            plt.plot(k, flow_plot[e, s_time:e_time], label='{}'.format(e))
+
+        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=int(len(self.edge_flow)/2))
+        plt.title('Flow of all edges')
+        plt.xlabel('time (s)')
+        plt.ylabel('Flow')
+        #plt.show()
+    
+    # display all figure
+    def plot_show(self):
+        plt.show()
+
+    def run(self, s_time, e_time, init_num, step_num):
         for i in self.graph.get_all_edges():
             for e in i:
                 self.edge_flow.update( {(e[0], e[1][0]): self.graph.get_flow(e[0], e[1][0])} )
         print(self.edge_flow)
-
         
         for i in range(0, init_num):
-            self.p_list.append(SimTrans_Passenger(self.graph, self.ori ,self.des, self.s_time))
+            self.p_list.append(SimTrans_Passenger(self.graph, self.ori ,self.des, s_time))
 
-        for t in range(0, time):
+        for t in range(0, e_time):
             for i in range(0, step_num):
                 self.p_list.append(SimTrans_Passenger(self.graph, self.ori ,self.des, t))
 
@@ -31,17 +81,17 @@ class SimTrans_Simulator(object):
                 e = passenger.track_position(t)
                 if e in self.edge_flow:
                     self.edge_flow.update( {e: self.edge_flow.get(e)+1} )
-                    #print(self.edge_flow.get(e))
-                    #print(self.graph.get_edge(e[0],e[1]))
                 elif e == self.des:
                     self.p_list.remove(passenger)
                     
             for e in self.edge_flow:
                 self.graph.update_flow(e[0], e[1], self.edge_flow.get(e))
 
-
+            
             print('\r\ntime {}:  flow:{}'.format(t, self.edge_flow))
+            self.edge_flow_history.append( dict(self.edge_flow) )
             print('cost:{}'.format(self.graph.get_paths_cost(self.ori ,self.des)))
-                
+
+         
             
 
