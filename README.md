@@ -2,7 +2,8 @@
 
 ## Install
 * Python3
-* Numpy
+* numpy
+* matplotlib
 
 ## Usage
 You can find the description in [wiki](https://github.com/momodupi/SimTrans/wiki).
@@ -36,7 +37,7 @@ g_m = np.array([
 m_f = np.zeros((7,7))
 
 # time consumption
-m_t = np.array([
+m_t = 60*np.array([
     [0,20,5,0,0,0,10],#0
     [0,0,5,20,0,0,0],#1
     [0,5,0,0,0,7,0],#2
@@ -66,12 +67,16 @@ g.update_w_all_edges(m_f, m_t, m_c)
 # set the simulator with graph 
 m = SimTrans_Simulator(g, 0, 6)
 
-# initial passengers: 50
-# arriving passengers at each time: 150
-# running time: 1000
-m.run(1000, 50, 50)
+# initial passengers: 5
+# arriving passengers at each time: 1
+# running time: 3600
+start_time = 0
+end_time = 3600
+m.run(start_time, end_time, 5, 5)
 
-
+# plot the flow of each edge
+m.plot_all_edge_flow(start_time, end_time)
+m.plot_show()
 
 
 ```
