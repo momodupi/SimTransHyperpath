@@ -24,12 +24,12 @@ class SimTrans_Simulator(object):
         self.plot_num = self.plot_num + 1
         plt.figure(self.plot_num)
         k = np.arange(s_time,e_time,1)
-        flow_plot = np.zeros(e_time-s_time)
+        #flow_plot = np.zeros(e_time-s_time)
 
-        for i in range(len(self.edge_flow_history)):
-            flow_plot[i] = self.edge_flow_history[i][(n1,n2)]
+        #for i in range(len(self.edge_flow_history)):
+            #flow_plot[i] = self.edge_flow_history[i][(n1,n2)]
 
-        plt.plot(k, flow_plot[s_time:e_time], label='{}'.format((n1,n2)))
+        plt.plot(k, [ i[(n1,n2)] for i in self.edge_flow_history ], label='{}'.format((n1,n2)))
         #plt.legend(loc='upper right')
         plt.xlabel('time (s)')
         plt.ylabel('Flow')
@@ -41,16 +41,9 @@ class SimTrans_Simulator(object):
         self.plot_num = self.plot_num + 1
         plt.figure(self.plot_num)
         k = np.arange(s_time,e_time,1)
-        flow_plot = np.zeros((len(self.edge_flow), e_time-s_time))
 
-        for i in range(len(self.edge_flow_history)):
-            e_num = 0
-            for e, f in self.edge_flow_history[i].items():
-                flow_plot[ e_num ][i] = f
-                e_num = e_num + 1
-
-        for e in range(0, len(self.edge_flow)):
-            plt.plot(k, flow_plot[e, s_time:e_time], label='{}'.format(e))
+        for e in self.edge_flow:
+            plt.plot(k, [ i[e] for i in self.edge_flow_history ], label='{}'.format(e))
 
         plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=int(len(self.edge_flow)/2))
         plt.title('Flow of all edges')

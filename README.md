@@ -71,7 +71,7 @@ m = SimTrans_Simulator(g, 0, 6)
 # arriving passengers at each time: 1
 # running time: 3600
 start_time = 0
-end_time = 3600
+end_time = 36
 m.run(start_time, end_time, 5, 5)
 
 # plot the flow of each edge

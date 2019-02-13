@@ -21,7 +21,7 @@ g_m = np.array([
 m_f = np.zeros((7,7))
 
 # time consumption
-m_t = 600*np.array([
+m_t = 6000*np.array([
     [0,20,5,0,0,0,10],#0
     [0,0,5,20,0,0,0],#1
     [0,5,0,0,0,7,0],#2
@@ -55,11 +55,12 @@ m = SimTrans_Simulator(g, 0, 6)
 # arriving passengers at each time: 1
 # running time: 3600
 start_time = 0
-end_time = 3600
-m.run(start_time, end_time, 5, 5)
+end_time = 360000
+m.run(start_time, end_time, 5, 1)
 
-# plot the flow of each edge
+# plot the flow of some edges
 m.plot_all_edge_flow(start_time, end_time)
+m.plot_edge_flow(0, 6, start_time, end_time)
 m.plot_show()
 
 
