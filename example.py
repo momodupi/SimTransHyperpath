@@ -56,12 +56,13 @@ m = SimTrans_Simulator(g, 0, 6)
 # running time: 3600
 start_time = 0
 end_time = 360000
-m.run(start_time, end_time, 5, 1)
+m.run(start_time, end_time, 0, 1)
 
 # plot the flow of some edges
-m.plot_all_edge_flow(start_time, end_time)
-m.plot_edge_flow(0, 6, start_time, end_time)
+m.plot_all_edges_flow(start_time, end_time)
+#m.plot_edge_flow(0, 6, start_time, end_time)
+m.plot_all_paths_cost(start_time, end_time)
+m.plot_all_paths_decision(start_time, end_time)
 m.plot_show()
-
 
 
