@@ -50,4 +50,3 @@ class SimTrans_Passenger(object):
                 self.pos = self.des
                 #print(self.pos)
         return self.pos
-

@@ -15,6 +15,8 @@ class SimTrans_Simulator(object):
         self.des = d
         self.edge_flow = {}
         self.edge_flow_history = []
+        self.edge_cost_history = []
+        self.edge_decision_history = []
         self.p_list = []
 
         self.plot_num = 0
@@ -37,7 +39,7 @@ class SimTrans_Simulator(object):
         #plt.show()
         
     # plot flow for each path
-    def plot_all_edge_flow(self, s_time, e_time):
+    def plot_all_edges_flow(self, s_time, e_time):
         self.plot_num = self.plot_num + 1
         plt.figure(self.plot_num)
         k = np.arange(s_time,e_time,1)
@@ -50,6 +52,40 @@ class SimTrans_Simulator(object):
         plt.xlabel('time (s)')
         plt.ylabel('Flow')
         #plt.show()
+
+
+    # plot cost of each path
+    def plot_all_paths_cost(self, s_time, e_time):
+        self.plot_num = self.plot_num + 1
+        plt.figure(self.plot_num)
+        k = np.arange(s_time,e_time,1)
+
+        for e in self.graph.get_paths_cost(self.ori ,self.des):
+            idx = self.graph.get_paths_cost(self.ori ,self.des).index(e)
+            plt.plot(k, [ i[ idx ] for i in self.edge_cost_history ], label='{}'.format(self.graph.get_all_paths(self.ori, self.des)[idx]))
+
+        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=int(len(self.edge_flow)/2))
+        plt.title('Cost of all paths')
+        plt.xlabel('time (s)')
+        plt.ylabel('Cost')
+        #plt.show()
+
+    # plot decision of each path
+    def plot_all_paths_decision(self, s_time, e_time):
+        self.plot_num = self.plot_num + 1
+        plt.figure(self.plot_num)
+        k = np.arange(s_time,e_time,1)
+
+        for e in self.graph.get_paths_cost(self.ori ,self.des):
+            idx = self.graph.get_paths_cost(self.ori ,self.des).index(e)
+            plt.plot(k, [ i[ idx ] for i in self.edge_decision_history ], label='{}'.format(self.graph.get_all_paths(self.ori, self.des)[idx]))
+
+        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=int(len(self.edge_flow)/2))
+        plt.title('Decision for all paths')
+        plt.xlabel('time (s)')
+        plt.ylabel('Decision')
+        #plt.show()
+
     
     # display all figure
     def plot_show(self):
@@ -84,7 +120,8 @@ class SimTrans_Simulator(object):
             print('\r\ntime {}:  flow:{}'.format(t, self.edge_flow))
             self.edge_flow_history.append( dict(self.edge_flow) )
             print('cost:{}'.format(self.graph.get_paths_cost(self.ori ,self.des)))
-
+            self.edge_cost_history.append( self.graph.get_paths_cost(self.ori ,self.des) )
+            print('decision:{}'.format(self.p_list[-1].get_decision(self.ori ,self.des)))
+            self.edge_decision_history.append( self.p_list[-1].get_decision(self.ori ,self.des) )
          
             
-
