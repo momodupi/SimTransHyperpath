@@ -38,7 +38,7 @@ class SimTrans_Simulator(object):
         plt.title('Flow of edge {}'.format((n1,n2)))
         #plt.show()
         
-    # plot flow for each path
+    # plot flow for each edges
     def plot_all_edges_flow(self, s_time, e_time):
         self.plot_num = self.plot_num + 1
         plt.figure(self.plot_num)
