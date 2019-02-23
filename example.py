@@ -1,5 +1,4 @@
 from SimTrans_Graph import SimTrans_Graph
-from SimTrans_Passenger import SimTrans_Passenger
 from SimTrans_Simulator import SimTrans_Simulator
 
 import numpy as np
@@ -77,16 +76,15 @@ m = SimTrans_Simulator(g, 0, 6)
 # initial passengers: 5
 # arriving passengers at each time: 1
 # running time: 3600
+# simulator mode: wardrop graph without transit time
 start_time = 0
-end_time = 100
-#m.set_transfer_time(False)
+end_time = 3600
 m.set_mode('wardrop')
-m.run(start_time, end_time, 0, 1000)
+m.run(start_time, end_time, 5, 1)
 
 
-# plot the flow of some edges
+# plot the flow of edges and cost of paths
 m.plot_all_edges_flow(start_time, end_time)
-#m.plot_edge_flow(0, 6, start_time, end_time)
 m.plot_all_paths_cost(start_time, end_time)
 m.plot_all_paths_decision(start_time, end_time)
 m.plot_show()

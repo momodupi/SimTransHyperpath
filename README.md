@@ -6,21 +6,21 @@
 * matplotlib
 
 ## Usage
-You can find the description in [wiki](https://github.com/momodupi/SimTrans/wiki).
+You can find the manual in [wiki](https://github.com/momodupi/SimTrans/wiki).
 
 
 ## An example
-![alt text](https://github.com/momodupi/SimTrans/blob/master/example_fig.png?raw=true)
+A simple simulator for a city with 6 nodes and 3 transportation modes.
 
 ```python
-# A Simple Simulator
-
+# Import all required package
 from SimTrans_Graph import SimTrans_Graph
-from SimTrans_Passenger import SimTrans_Passenger
 from SimTrans_Simulator import SimTrans_Simulator
-
 import numpy as np
+```
 
+```python
+# Generate graph
 g = SimTrans_Graph()
 
 # a graph with original 0 and destination 6
@@ -69,17 +69,18 @@ g.update_w_all_edges(m_f, m_t, m_c)
 m = SimTrans_Simulator(g, 0, 6)
 
 # initial passengers: 5
-# arriving passengers at each time: 1
+# arriving passengers at each time: 5
 # running time: 3600
 start_time = 0
-end_time = 36
-m.run(start_time, end_time, 5, 5)
+end_time = 3600
+m.set_mode('normal')
+m.run(start_time, end_time, 5, 1)
 
-# plot the flow of each edge
-m.plot_all_edge_flow(start_time, end_time)
+# plot the flow of edges and cost of paths
+m.plot_all_edges_flow(start_time, end_time)
+m.plot_all_paths_cost(start_time, end_time)
+m.plot_all_paths_decision(start_time, end_time)
 m.plot_show()
-
-
 ```
 
 
