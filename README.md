@@ -6,9 +6,6 @@
 * matplotlib
 
 ## Usage
-You can find the manual in [wiki](https://github.com/momodupi/SimTrans/wiki).
-
-
 | Modules |Description | Arguments | Return |
 | -- |-------- | -------- | -- |
 |  **SimTrans_Graph** |
