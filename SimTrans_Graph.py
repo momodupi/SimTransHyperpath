@@ -157,7 +157,7 @@ class SimTrans_Graph(object):
     def convert_cost(self, m_f, m_t, m_c):
         # define the cost function
         # i,e. quadritic cost
-        return m_c + m_t + 0.1*(m_f*m_f)
+        return m_c + m_t*(m_f*m_f)
     
     # update flow
     def update_flow(self, n1, n2, f):

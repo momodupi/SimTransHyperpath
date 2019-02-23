@@ -8,6 +8,8 @@ from SimTrans_Passenger import SimTrans_Passenger
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+
 class SimTrans_Simulator(object):
     def __init__(self, g, o, d):
         self.graph = g
@@ -20,6 +22,10 @@ class SimTrans_Simulator(object):
         self.p_list = []
 
         self.plot_num = 0
+        self.mode = 'normal'
+
+    def set_mode(self, mode='normal'):
+        self.mode = mode
 
     # plot flow for edge (n1, n2)
     def plot_edge_flow(self, n1, n2, s_time, e_time):
@@ -91,7 +97,8 @@ class SimTrans_Simulator(object):
     def plot_show(self):
         plt.show()
 
-    def run(self, s_time, e_time, init_num, step_num):
+    # simulator with transfer time
+    def simulator_normal(self, s_time, e_time, init_num, step_num):
         for i in self.graph.get_all_edges():
             for e in i:
                 self.edge_flow.update( {(e[0], e[1][0]): self.graph.get_flow(e[0], e[1][0])} )
@@ -123,5 +130,80 @@ class SimTrans_Simulator(object):
             self.edge_cost_history.append( self.graph.get_paths_cost(self.ori ,self.des) )
             print('decision:{}'.format(self.p_list[-1].get_decision(self.ori ,self.des)))
             self.edge_decision_history.append( self.p_list[-1].get_decision(self.ori ,self.des) )
-         
+        
+    # simulator without transfer time
+    def simulator_notranstime(self, s_time, e_time, init_num, step_num):
+        for i in self.graph.get_all_edges():
+            for e in i:
+                self.edge_flow.update( {(e[0], e[1][0]): self.graph.get_flow(e[0], e[1][0])} )
+        print(self.edge_flow)
+        
+        for i in range(0, init_num):
+            self.p_list.append(SimTrans_Passenger(self.graph, self.ori ,self.des, s_time))
+
+        for t in range(0, e_time):
+            self.p_list = []
+            for i in range(0, step_num):
+                self.p_list.append(SimTrans_Passenger(self.graph, self.ori ,self.des, t))
+
+            { self.edge_flow.update( {e_formate: 0} ) for e_formate in self.edge_flow }
+
+            for passenger in self.p_list:
+                p_path = passenger.get_path()
+                for i in range(0, len(p_path)-1):
+                    self.edge_flow.update( {(p_path[i],p_path[i+1]): self.edge_flow.get( (p_path[i],p_path[i+1]) )+1} )
+             
+            for e in self.edge_flow:
+                self.graph.update_flow(e[0], e[1], self.edge_flow.get(e))
+            
+            print('\r\ntime {}:  flow:{}'.format(t, self.edge_flow))
+            self.edge_flow_history.append( dict(self.edge_flow) )
+            print('cost:{}'.format(self.graph.get_paths_cost(self.ori ,self.des)))
+            self.edge_cost_history.append( self.graph.get_paths_cost(self.ori ,self.des) )
+            print('decision:{}'.format(self.p_list[-1].get_decision(self.ori ,self.des)))
+            self.edge_decision_history.append( self.p_list[-1].get_decision(self.ori ,self.des) )
+
+
+    # simulator of wardrop
+    def simulator_wardrop(self, s_time, e_time, init_num, step_num):
+        for i in self.graph.get_all_edges():
+            for e in i:
+                self.edge_flow.update( {(e[0], e[1][0]): self.graph.get_flow(e[0], e[1][0])} )
+        print(self.edge_flow)
+        
+        p = SimTrans_Passenger(self.graph, self.ori ,self.des, s_time)
+
+        for t in range(0, e_time):            
+            p = SimTrans_Passenger(self.graph, self.ori ,self.des, s_time)
+            flow_list = p.get_decision( self.ori ,self.des )
+            
+            { self.edge_flow.update( {e_formate: 0} ) for e_formate in self.edge_flow }
+
+            path_list = self.graph.get_all_paths(self.ori, self.des)
+            for f in flow_list:
+                f_path = path_list[ flow_list.index(f) ]
+                for i in range(0, len(f_path)-1):
+                    self.edge_flow.update( {(f_path[i],f_path[i+1]): self.edge_flow.get( (f_path[i],f_path[i+1]) )+ f } )
+             
+            for e in self.edge_flow:
+                self.graph.update_flow(e[0], e[1], self.edge_flow.get(e))
+            
+            print('\r\ntime {}:  flow:{}'.format(t, self.edge_flow))
+            self.edge_flow_history.append( dict(self.edge_flow) )
+            print('cost:{}'.format(self.graph.get_paths_cost(self.ori ,self.des)))
+            self.edge_cost_history.append( self.graph.get_paths_cost(self.ori ,self.des) )
+            print('decision:{}'.format(p.get_decision(self.ori ,self.des)))
+            self.edge_decision_history.append( p.get_decision(self.ori ,self.des) )
+        
+        p1 = np.array( p.get_decision(self.ori ,self.des ) )
+        p2 = np.array( self.graph.get_paths_cost(self.ori ,self.des) )
+        print( p1.dot( p2 ) )
+
+    def run(self, s_time, e_time, init_num, step_num):
+        if self.mode == 'wardrop':
+            self.simulator_wardrop(s_time, e_time, init_num, step_num)
+        elif self.mode == 'notranstime':
+            self.simulator_notranstime(s_time, e_time, init_num, step_num)
+        else:
+            self.simulator_normal(s_time, e_time, init_num, step_num)
             

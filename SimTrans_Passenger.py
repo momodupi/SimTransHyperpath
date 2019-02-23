@@ -36,6 +36,10 @@ class SimTrans_Passenger(object):
             time_list.append( self.graph.get_edge( num_path[sel[0]][i], num_path[sel[0]][i+1] )[1][1].get('time') )
 
         return num_path[sel[0]], time_list
+    
+    # get the path of passenger
+    def get_path(self):
+        return self.path
 
     # track the position of passenger
     def track_position(self, c_t):
