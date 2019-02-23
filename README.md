@@ -7,28 +7,29 @@
 
 ## Usage
 You can find the manual in [wiki](https://github.com/momodupi/SimTrans/wiki).
-## SimTrans_Graph
+
+### SimTrans_Graph
 | Modules |Description | Arguments | Return |
 | -- |-------- | -------- | -- |
-| add_node(n) | add n as a new node | *n*: node | N/A |
-| add_edge(n1, n2) | add a new edge between n1 and n2 | *n1*: start node <br> *n2*: end node | N/A |
-| add_w_edge(n1, n2, w) | add a new edge between n1 and n2 with weight w | *n1*: start node <br> *n2*: end node <br> *w*: edge weight | N/A |
-| update_w_edge(n1, n2, w) | update weight to the edge (n1,n2) if exists | *n1*: start node <br> *n2*: end node <br> *w*: edge weight | N/A |
-| update_w_all_edges(mf, mt, mc) | update all edges weight with matrices | *mf*: flow matrix <br> *mt*: cost matrix <br> *mc*: cost matrix | N/A |
-| update_flow(n1, n2, f) | update flow f for edge (n1,n2) | *n1*: start node <br> *n2*: end node <br> *f*: edge flow | N/A |
-| get_all_nodes() | return all nodes in the graph | N/A | list of all nodes |
-| get_all_edges() | return all edges | N/A | list of all edges |
-| get_all_paths(n1, n2) | get all path from n1 to n2 | *n1*: start node <br> *n2*: end node | list of all paths |
-| get_paths_cost(n1, n2) | get the cost for each path from n1 to n2 | *n1*: start node <br> *n2*: end node | list of all path cost |
-| get_flow(n1, n2) | get flow from n1 to n2 | *n1*: start node <br> *n2*: end node | flow of (n1,n2) |
-| remove_node(n) | remove node n with corresponding edges |
-| remove_edge(n1, n2) | remove edge (n1,n2) if exists |
-| print_graph() | print the entire graph | *n1*: start node <br> *n2*: end node | N/A |
-| create_graph(M) | create a graph with matrix M | *M*: edge matrix | N/A |
-| create_random_graph(m_size) | create a random graph with size | *m_size*: number of nodes | N/A |
+| `add_node(n)` | add n as a new node | `n`: node | N/A |
+| `add_edge(n1, n2`) | add a new edge between n1 and n2 | `n1`: start node <br> `n2`: end node | N/A |
+| `add_w_edge(n1, n2, w)` | add a new edge between n1 and n2 with weight w | *n1*: start node <br> *n2*: end node <br> *w*: edge weight | N/A |
+| `update_w_edge(n1, n2, w)` | update weight to the edge (n1,n2) if exists | *n1*: start node <br> *n2*: end node <br> *w*: edge weight | N/A |
+| `update_w_all_edges(mf, mt, mc)` | update all edges weight with matrices | *mf*: flow matrix <br> *mt*: cost matrix <br> *mc*: cost matrix | N/A |
+| `update_flow(n1, n2, f)` | update flow f for edge (n1,n2) | *n1*: start node <br> *n2*: end node <br> *f*: edge flow | N/A |
+| `get_all_nodes()` | return all nodes in the graph | N/A | list of all nodes |
+| `get_all_edges()` | return all edges | N/A | list of all edges |
+| `get_all_paths(n1, n2)` | get all path from n1 to n2 | *n1*: start node <br> *n2*: end node | list of all paths |
+| `get_paths_cost(n1, n2)` | get the cost for each path from n1 to n2 | *n1*: start node <br> *n2*: end node | list of all path cost |
+| `get_flow(n1, n2)` | get flow from n1 to n2 | *n1*: start node <br> *n2*: end node | flow of (n1,n2) |
+| `remove_node(n)` | remove node n with corresponding edges |
+| `remove_edge(n1, n2)` | remove edge (n1,n2) if exists |
+| `print_graph()` | print the entire graph | *n1*: start node <br> *n2*: end node | N/A |
+| `create_graph(M)` | create a graph with matrix M | *M*: edge matrix | N/A |
+| `create_random_graph(m_size)` | create a random graph with size | *m_size*: number of nodes | N/A |
 
 
-## SimTrans_Passenger
+### SimTrans_Passenger
 | Modules |Description | Arguments | Return |
 | -- |-------- | -------- | -- |
 | get_decision(n1, n2) | get passenger decision from n1 to n2 | *n1*: start node <br> *n2*: end node | list of probability distribution over all paths |
@@ -36,7 +37,7 @@ You can find the manual in [wiki](https://github.com/momodupi/SimTrans/wiki).
 | track_position(c_t) | track the position of this passenger at time c_t | *c_t*:current time | current position |
 
 
-## SimTrans_Simulator
+### SimTrans_Simulator
 | Modules |Description | Arguments | Return |
 | -- |-------- | -------- | -- |
 | set_mode(mode) | set the simulator mode | *'normal'*: simulator in normal mode with transfer time, no nomalized flow <br> *'notranstime'*: simulator without transfer time, no nomalized flow <br> *'wardrop'*: simulator without transfer time, nomalized flow for wardrop | N/A |
