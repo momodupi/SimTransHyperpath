@@ -10,6 +10,28 @@ You can find the description in [wiki](https://github.com/momodupi/SimTrans/wiki
 
 
 ## An example
+---
+title: "TestNonTufteLua"
+author: "Me"
+output:
+  pdf_document :
+    latex_engine: lualatex
+---
+
+```{r}
+options(texi2dvi = "lualatex")
+```
+
+```{r tikTest2, eval = TRUE, engine = "tikz", engine.opts = list(template = "tikz2pdf.tex")}
+\usetikzlibrary{graphs, graphdrawing}
+\usegdlibrary{layered}
+\tikz [gr/.style={gray!50}, font=\bfseries]
+\graph [layered layout] {
+    % A and F are horizontally aligned if you also set weight=0.5 for A -- C.
+    A -- [minimum layers=2] C -- F,
+    { [nodes=gr, edges=gr] A -- B -- { E, D -- F } }
+};
+```
 
 ```python
 # A Simple Simulator
