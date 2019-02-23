@@ -78,7 +78,7 @@ m = SimTrans_Simulator(g, 0, 6)
 # running time: 3600
 # simulator mode: wardrop graph without transit time
 start_time = 0
-end_time = 3600
+end_time = 360
 m.set_mode('wardrop')
 m.run(start_time, end_time, 5, 1)
 
