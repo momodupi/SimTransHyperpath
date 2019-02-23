@@ -12,7 +12,7 @@ You can find the manual in [wiki](https://github.com/momodupi/SimTrans/wiki).
 | Modules |Description | Arguments | Return |
 | -- |-------- | -------- | -- |
 | `add_node(n)` | add n as a new node | `n`: node | N/A |
-| `add_edge(n1,n2`) | add a new edge between n1 and n2 | `n1`: start node <br> `n2`: end node | N/A |
+| `add_edge(n1,n2)` | add a new edge between n1 and n2 | `n1`: start node <br> `n2`: end node | N/A |
 | `add_w_edge(n1,n2,w)` | add a new edge between n1 and n2 with weight w | `n1`: start node <br> `n2`: end node <br> `w`: edge weight | N/A |
 | `update_w_edge(n1,n2,w)` | update weight to the edge (n1,n2) if exists | `n1`: start node <br> `n2`: end node <br> `w`: edge weight | N/A |
 | `update_w_all_edges(m_f,m_t,m_c)` | update all edges weight with matrices | `mf`: flow matrix <br> `mt`: cost matrix <br> `mc`: cost matrix | N/A |
