@@ -27,18 +27,18 @@ You can find the manual in [wiki](https://github.com/momodupi/SimTrans/wiki).
 | `remove_edge(n1,n2)` | remove edge (n1,n2) if exists |
 | `print_graph()` | print the entire graph | `n1`: start node <br> `n2`: end node | N/A |
 | `create_graph(M)` | create a graph with matrix M | `M`: edge matrix | N/A |
-| `create_random_graph(m_size)` | create a random graph with size | `m_size`: number of nodes | N/A |
+| `create_random_graph(ms)` | create a random graph with size | `ms`: number of nodes | N/A |
 | **SimTrans_Passenger** |
 | `get_decision(n1, n2)` | get passenger decision from n1 to n2 | `n1`: start node <br> `n2`: end node | list of probability distribution over all paths |
 | `get_path()` | get the path of this passenger | N/A | selected path |
-| `track_position(c_t)` | track the position of this passenger at time c_t | `c_t`:current time | current position |
+| `track_position(t)` | track the position of this passenger at time t | `t`: current time | current position |
 | **SimTrans_Simulator** |
 | `set_mode(mode)` | set the simulator mode | `'normal'`: simulator in normal mode with transfer time, no nomalized flow <br> `'notranstime'`: simulator without transfer time, no nomalized flow <br> `'wardrop'`: simulator without transfer time, nomalized flow for wardrop | N/A |
-| `run(s_time,e_time,init_num,step_num)` | run simulator | `s_time`: start time <br> `e_time`: end time <br> `init_num`: initial number of passengers <br> `step_num`: number of passengers at each step | N/A |
-| `plot_edge_flow(n1,n2,s_time,e_time)` | plot flow for edge (n1, n2) from s_time to e_time | `n1`: start node <br> `n2`: end node <br> `s_time`: start time <br> `e_time`: end time | N/A |
-| `plot_all_edges_flow(s_time,e_time)` | plot flow for each edges from s_time to e_time | `s_time`: start time <br> `e_time`: end time | N/A |
-| `plot_all_paths_cost(s_time,e_time)` | plot cost of each path from s_time to e_time | `s_time`: start time <br> `e_time`: end time | N/A |
-| `plot_all_paths_decision(s_time,e_time)` | plot decision of each path from s_time to e_time | `s_time`: start time <br> `e_time`: end time | N/A |
+| `run(s,e,in,sn)` | run simulator | `s`: start time <br> `e`: end time <br> `in`: initial number of passengers <br> `sn`: number of passengers at each step | N/A |
+| `plot_edge_flow(n1,n2,s,e)` | plot flow for edge (n1, n2) from time s to e | `n1`: start node <br> `n2`: end node <br> `s`: start time <br> `e`: end time | N/A |
+| `plot_all_edges_flow(s,e)` | plot flow for each edges from s_time to e_time | `s`: start time <br> `e`: end time | N/A |
+| `plot_all_paths_cost(s,e)` | plot cost of each path from time s to e | `s`: start time <br> `e`: end time | N/A |
+| `plot_all_paths_decision(s,e)` | plot decision of each path from time s to e | `s`: start time <br> `e`: end time | N/A |
 | `plot_show()` | display all plotted figure | N/A | N/A |
 
 
