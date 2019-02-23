@@ -18,7 +18,7 @@ class SimTrans_Passenger(object):
             self.t_time[i] = self.t_time[i-1]+self.t_time[i]
         
     def get_decision(self, n1, n2):
-        '''decision mode from n1 to n2'''
+        '''get passenger decision from n1 to n2'''
         c_list = [ np.exp(-i) for i in self.graph.get_paths_cost(n1, n2) ]
         return [ float( i/sum(c_list)) for i in c_list ]
 

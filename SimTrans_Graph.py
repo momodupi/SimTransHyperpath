@@ -46,7 +46,7 @@ class SimTrans_Graph(object):
         return {"cost": self.convert_cost(m_f, m_t, m_c) ,"flow": m_f,"time": m_t,"fee": m_c}
 
     def update_w_all_edges(self, m_f, m_t, m_c):
-        '''convert all edges weight with matrices'''
+        '''update all edges weight with matrices'''
         for n_list in self.n_edge:
             for e_list in n_list:
                 i = e_list[0]
@@ -70,7 +70,6 @@ class SimTrans_Graph(object):
             e = [ (i,d) for d in self.n_dirc[i] ]
             self.n_edge.append(e)
         return self.n_edge
-
 
     def remove_node(self, n):
         '''remove node n with corresponding edges'''

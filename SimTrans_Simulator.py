@@ -84,7 +84,7 @@ class SimTrans_Simulator(object):
         plt.ylabel('Decision')
 
     def plot_show(self):
-        '''display all figure'''
+        '''display all plotted figure'''
         plt.show()
 
     def simulator_normal(self, s_time, e_time, init_num, step_num):
