@@ -45,7 +45,7 @@ def main():
         [0,0,0,0,0,0,0]#6
     ])
     '''
-
+    
     m_t = np.array([
         [0,1,0.8,0,0,0,0.5],#0
         [0,0,1,1,0,0,0],#1
@@ -55,7 +55,7 @@ def main():
         [0,0,0,0,1,0,0.8],#5
         [0,0,0,0,0,0,0]#6
     ])
-
+    '''
     m_c = np.array([
         [0,0.9,1,0,0,0,4],#0
         [0,0,1,1,0,0,0],#1
@@ -65,6 +65,28 @@ def main():
         [0,0,0,0,1,0,1],#5
         [0,0,0,0,0,0,0]#6
     ])
+    '''
+    '''
+    m_t = float(1/108)*np.array([
+        [0,1,1,0,0,0,1],#0
+        [0,0,1,1,0,0,0],#1
+        [0,1,0,0,0,1,0],#2
+        [0,0,0,0,1,0,0],#3
+        [0,0,0,0,0,1,1],#4
+        [0,0,0,0,1,0,1],#5
+        [0,0,0,0,0,0,0]#6
+    ])
+    '''
+    m_c = np.array([
+        [0,20,21,0,0,0,68],#0
+        [0,0,5,22,0,0,0],#1
+        [0,5,0,0,0,25,0],#2
+        [0,0,0,0,17,0,0],#3
+        [0,0,0,0,0,5,17],#4
+        [0,0,0,0,5,0,22],#5
+        [0,0,0,0,0,0,0]#6
+    ])
+        
 
     # create a graph
     g.create_graph(g_m)
@@ -81,10 +103,11 @@ def main():
     # running time: 3600
     # simulator mode: wardrop graph without transit time
     start_time = 0
-    end_time = 360
-    m.set_mode('normal')
-    m.run(start_time, end_time, 5, 1)
+    end_time = 20
+    m.set_mode('wardrop')
+    m.run(start_time, end_time, 0, 1)
 
+    #print(g.get_all_paths   (0,6))
 
     # plot the flow of edges and cost of paths
     m.plot_all_edges_flow(start_time, end_time)
