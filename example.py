@@ -1,8 +1,8 @@
 from SimTrans_Graph import SimTrans_Graph
 from SimTrans_Simulator import SimTrans_Simulator
 
-import numpy as np
 
+import numpy as np
 
 
 def main():
@@ -22,7 +22,8 @@ def main():
     # initial flow
     m_f = np.zeros((7,7))
 
-    # time consumption    
+
+    # time consumption
     m_t = np.array([
         [0,1,0.8,0,0,0,0.5],#0
         [0,0,1,1,0,0,0],#1
@@ -32,19 +33,9 @@ def main():
         [0,0,0,0,1,0,0.8],#5
         [0,0,0,0,0,0,0]#6
     ])
+
     '''
-    m_c = np.array([
-        [0,0.9,1,0,0,0,4],#0
-        [0,0,1,1,0,0,0],#1
-        [0,1,0,0,0,1,0],#2
-        [0,0,0,0,1,0,0],#3
-        [0,0,0,0,0,1,1],#4
-        [0,0,0,0,1,0,1],#5
-        [0,0,0,0,0,0,0]#6
-    ])
-    '''
-    '''
-    m_t = float(1/108)*np.array([
+    m_t = float(1/216)*np.array([
         [0,1,1,0,0,0,1],#0
         [0,0,1,1,0,0,0],#1
         [0,1,0,0,0,1,0],#2
@@ -82,14 +73,22 @@ def main():
     start_time = 0
     end_time = 20
     m.set_mode('wardrop')
-    m.run(start_time, end_time, 0, 1)
-
-    #print(g.get_all_paths   (0,6))
+    m.run_once(start_time, end_time, 0, 1)
 
     # plot the flow of edges and cost of paths
     m.plot_all_edges_flow(start_time, end_time)
     m.plot_all_paths_cost(start_time, end_time)
     m.plot_all_paths_decision(start_time, end_time)
+
+    # sensitivity simulation
+    # edges: [(0,6),(0,2),(2,5),(0,1),(3,4)]
+    # range of a: [0,1,0,5,1]
+    # range of b: -10:+10    
+    edge_list = [(0,6),(0,2),(2,5),(0,1),(3,4)]
+    a_list = [0.1,0.5,1]
+    b_range = 10
+    m.run_sensitivity(start_time, end_time, m_f, m_t, m_c, edge_list, a_list, b_range)
+    
     m.plot_show()
 
 
