@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from SimTrans_Graph import SimTrans_Graph
 from SimTrans_Simulator import SimTrans_Simulator
 
