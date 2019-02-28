@@ -32,7 +32,7 @@
 | **SimTrans_Simulator** |
 | `set_mode(mode)` | set the simulator mode | `'normal'`: simulator in normal mode with transfer time, no nomalized flow <br> `'notranstime'`: simulator without transfer time, no nomalized flow <br> `'wardrop'`: simulator without transfer time, nomalized flow for wardrop | N/A |
 | `run_once(s,e,in,sn)` | run simulator one time | `s`: start time <br> `e`: end time <br> `in`: initial number of passengers <br> `sn`: number of passengers at each step | N/A |
-| `run_sensitivity(s,e,mf,mt,mc,el,mtr,mcr)` | simulate sensitivity of equilibrium to each edge | `s`: start time <br> `e`: end time <br> `mf`: flow matrix <br> `mt`: cost matrix <br> `mc`: cost matrix <br> `el`:list of edge <br> `mtr`:list of `mt` <br> `mcr`:range of `mc`  | N/A |
+| `run_sensitivity(s,e,mf,mt,mc,el,mtr,mcr)` | simulate sensitivity of equilibrium to each edge | `s`: start time <br> `e`: end time <br> `mf`: flow matrix <br> `mt`: cost matrix <br> `mc`: cost matrix <br> `el`: list of edge <br> `mtr`: list of `mt` <br> `mcr`: range of `mc`  | N/A |
 | `plot_edge_flow(n1,n2,s,e)` | plot flow for edge (n1, n2) from time s to e | `n1`: start node <br> `n2`: end node <br> `s`: start time <br> `e`: end time | N/A |
 | `plot_all_edges_flow(s,e)` | plot flow for each edges from s_time to e_time | `s`: start time <br> `e`: end time | N/A |
 | `plot_all_paths_cost(s,e)` | plot cost of each path from time s to e | `s`: start time <br> `e`: end time | N/A |
