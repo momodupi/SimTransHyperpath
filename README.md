@@ -20,8 +20,8 @@
 | `get_all_paths(n1,n2)` | get all path from n1 to n2 | `n1`: start node <br> `n2`: end node | list of all paths |
 | `get_paths_cost(n1,n2)` | get the cost for each path from n1 to n2 | `n1`: start node <br> `n2`: end node | list of all path cost |
 | `get_flow(n1,n2)` | get flow from n1 to n2 | `n1`: start node <br> `n2`: end node | flow of (n1,n2) |
-| `remove_node(n)` | remove node n with corresponding edges |
-| `remove_edge(n1,n2)` | remove edge (n1,n2) if exists |
+| `remove_node(n)` | remove node n with corresponding edges | N/A | N/A |
+| `remove_edge(n1,n2)` | remove edge (n1,n2) if exists | N/A | N/A |
 | `print_graph()` | print the entire graph | `n1`: start node <br> `n2`: end node | N/A |
 | `create_graph(M)` | create a graph with matrix M | `M`: edge matrix | N/A |
 | `create_random_graph(ms)` | create a random graph with size | `ms`: number of nodes | N/A |
