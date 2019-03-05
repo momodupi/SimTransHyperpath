@@ -241,11 +241,16 @@ class SimTrans_Simulator(object):
                     self.run_once(start_time, end_time, 0, 1)
                     c_cost.append(self.get_convergence())
 
-                #plt.plot(k, c_cost, marker=next(linecycler), color='k', label='$a={}$'.format(e_m_t))
-                plt.plot(k, c_cost, label='$a={}$'.format(e_m_t))
-
+                plt.plot(k, c_cost, marker=next(linecycler), color='k', label='$a={}$'.format(e_m_t))
+                
             plt.legend(loc='lower right', framealpha=1)
             plt.xlabel('b of {}'.format((e[0], e[1])))
             plt.ylabel('average cost')
             plt.title('Average cost of changing constant cost of {}'.format((e[0], e[1])))
             plt.savefig('avrgcst{}{}.png'.format(e[0], e[1]), dpi=600)
+
+
+
+
+
+            
