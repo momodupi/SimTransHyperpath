@@ -8,6 +8,8 @@ from SimTrans_Passenger import SimTrans_Passenger
 import numpy as np
 import matplotlib.pyplot as plt
 
+from itertools import cycle
+
 
 
 class SimTrans_Simulator(object):
@@ -23,6 +25,9 @@ class SimTrans_Simulator(object):
         self.conv_cost = 0
         self.plot_num = 0
         self.mode = 'normal'
+        self.markers = ['.','+','x','o','d','s','*','p','<','>','^','v']
+        #self.figuresize = (10,8)
+        plt.rcParams.update({'font.size': 14})
 
     def set_mode(self, mode='normal'):
         '''set the simulator mode'''
@@ -32,9 +37,11 @@ class SimTrans_Simulator(object):
         '''plot flow for edge (n1, n2) from s_time to e_time'''
         self.plot_num = self.plot_num + 1
         plt.figure(self.plot_num)
+        linecycler = cycle(self.markers)
         k = np.arange(s_time,e_time,1)
 
         plt.plot(k, [ i[(n1,n2)] for i in self.edge_flow_history ], label='{}'.format((n1,n2)))
+
         #plt.legend(loc='upper right')
         plt.xlabel('time (s)')
         plt.ylabel('Flow')
@@ -45,47 +52,53 @@ class SimTrans_Simulator(object):
         '''plot flow for each edges from s_time to e_time'''
         self.plot_num = self.plot_num + 1
         plt.figure(self.plot_num)
+        linecycler = cycle(self.markers)
+
         k = np.arange(s_time,e_time,1)
-
         for e in self.edge_flow:
-            plt.plot(k, [ i[e] for i in self.edge_flow_history ], label='{}'.format(e))
+            plt.plot(k, [ i[e] for i in self.edge_flow_history ], marker=next(linecycler), color='k', label='{}'.format(e))
 
-        plt.legend(loc='upper right')
+        plt.legend(loc='upper right', framealpha=1)
         plt.title('Flow of all edges')
         plt.xlabel('time (s)')
         plt.ylabel('Flow')
+        #plt.figure(figsize=self.figuresize)
         plt.savefig('flow.png', dpi=600)
 
     def plot_all_paths_cost(self, s_time, e_time):
         '''plot cost of each path from s_time to e_time'''
         self.plot_num = self.plot_num + 1
         plt.figure(self.plot_num)
+        linecycler = cycle(self.markers)
         k = np.arange(s_time,e_time,1)
 
         for e in self.graph.get_paths_cost(self.ori ,self.des):
             idx = self.graph.get_paths_cost(self.ori ,self.des).index(e)
-            plt.plot(k, [ i[ idx ] for i in self.edge_cost_history ], label='{}'.format(self.graph.get_all_paths(self.ori, self.des)[idx]))
+            plt.plot(k, [ i[ idx ] for i in self.edge_cost_history ], marker=next(linecycler), color='k', label='{}'.format(self.graph.get_all_paths(self.ori, self.des)[idx]))
 
-        plt.legend(loc='upper right')
+        plt.legend(loc='upper right', framealpha=1)
         plt.title('Cost of all paths')
         plt.xlabel('time (s)')
         plt.ylabel('Cost')
+        #plt.figure(figsize=self.figuresize)
         plt.savefig('cost.png', dpi=600)
 
     def plot_all_paths_decision(self, s_time, e_time):
         '''plot decision of each path from s_time to e_time'''
         self.plot_num = self.plot_num + 1
         plt.figure(self.plot_num)
+        linecycler = cycle(self.markers)
         k = np.arange(s_time,e_time,1)
 
         for e in self.graph.get_paths_cost(self.ori ,self.des):
             idx = self.graph.get_paths_cost(self.ori ,self.des).index(e)
-            plt.plot(k, [ i[ idx ] for i in self.edge_decision_history ], label='{}'.format(self.graph.get_all_paths(self.ori, self.des)[idx]))
+            plt.plot(k, [ i[ idx ] for i in self.edge_decision_history ], marker=next(linecycler), color='k', label='{}'.format(self.graph.get_all_paths(self.ori, self.des)[idx]))
 
-        plt.legend(loc='upper right')
-        plt.title('Decision for all paths')
+        plt.legend(loc='upper right', framealpha=1)
+        plt.title('Decision/Flow for all paths')
         plt.xlabel('time (s)')
-        plt.ylabel('Decision')
+        plt.ylabel('Decision/Flow')
+        #plt.figure(figsize=self.figuresize)
         plt.savefig('decision.png', dpi=600)
 
     def plot_show(self):
@@ -208,14 +221,14 @@ class SimTrans_Simulator(object):
 
 
     def run_sensitivity(self, start_time, end_time, m_f, m_t, m_c, edge_list=[], m_t_range=[], m_c_range=1):
-        K = 10
         for e in edge_list:
             self.plot_num = self.plot_num + 1
             plt.figure(self.plot_num)
-            k = np.arange(m_c[e[0]][e[1]]-K, m_c[e[0]][e[1]]+K)
+            linecycler = cycle(self.markers)
+            k = np.arange(m_c[e[0]][e[1]]-m_c_range, m_c[e[0]][e[1]]+m_c_range)
             for e_m_t in m_t_range:
                 c_cost = []
-                for e_m_c in range(m_c[e[0]][e[1]]-K, m_c[e[0]][e[1]]+K):
+                for e_m_c in range(m_c[e[0]][e[1]]-m_c_range, m_c[e[0]][e[1]]+m_c_range):
                     self.edge_flow = {}
                     self.edge_flow_history = []
                     self.edge_cost_history = []
@@ -228,11 +241,11 @@ class SimTrans_Simulator(object):
                     self.run_once(start_time, end_time, 0, 1)
                     c_cost.append(self.get_convergence())
 
+                #plt.plot(k, c_cost, marker=next(linecycler), color='k', label='$a={}$'.format(e_m_t))
                 plt.plot(k, c_cost, label='$a={}$'.format(e_m_t))
 
-            plt.legend(loc='lower right')
+            plt.legend(loc='lower right', framealpha=1)
             plt.xlabel('b of {}'.format((e[0], e[1])))
             plt.ylabel('average cost')
             plt.title('Average cost of changing constant cost of {}'.format((e[0], e[1])))
-            plt.savefig('avrgcst_{}.png'.format((e[0], e[1])), dpi=600)
-            
+            plt.savefig('avrgcst{}{}.png'.format(e[0], e[1]), dpi=600)
