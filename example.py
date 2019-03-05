@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from SimTrans_Graph import SimTrans_Graph
 from SimTrans_Simulator import SimTrans_Simulator
 
@@ -74,7 +71,7 @@ def main():
     # running time: 3600
     # simulator mode: wardrop graph without transit time
     start_time = 0
-    end_time = 20
+    end_time = 25
     m.set_mode('wardrop')
     m.run_once(start_time, end_time, 0, 1)
 
@@ -84,10 +81,10 @@ def main():
     m.plot_all_paths_decision(start_time, end_time)
 
     # sensitivity simulation
-    # edges: [(0,6),(0,2),(2,5),(0,1),(3,4)]
+    # edges: [(0,6),(0,2),(2,5),(0,1)]
     # range of a: [0,1,0,5,1]
     # range of b: -10:+10    
-    edge_list = [(0,6),(0,2),(2,5),(0,1),(3,4)]
+    edge_list = [(0,6),(0,2),(2,5),(0,1)]
     a_list = [0.1,0.5,1]
     b_range = 10
     m.run_sensitivity(start_time, end_time, m_f, m_t, m_c, edge_list, a_list, b_range)
