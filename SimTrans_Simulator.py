@@ -125,12 +125,13 @@ class SimTrans_Simulator(object):
                 e = passenger.track_position(t)
                 if e in self.edge_flow:
                     self.edge_flow.update( {e: self.edge_flow.get(e)+1} )
+                    self.graph.update_flow(e[0], e[1], self.edge_flow.get(e))
                 elif e == self.des:
                     self.p_list.remove(passenger)
-                    
+            ''' 
             for e in self.edge_flow:
                 self.graph.update_flow(e[0], e[1], self.edge_flow.get(e))
-
+            '''
             
             print('\r\ntime {}:  flow:{}'.format(t, self.edge_flow))
             self.edge_flow_history.append( dict(self.edge_flow) )
@@ -160,9 +161,11 @@ class SimTrans_Simulator(object):
                 p_path = passenger.get_path()
                 for i in range(0, len(p_path)-1):
                     self.edge_flow.update( {(p_path[i],p_path[i+1]): self.edge_flow.get( (p_path[i],p_path[i+1]) )+1} )
-             
+                    self.graph.update_flow(f_path[i],f_path[i+1], self.edge_flow.get( (f_path[i],f_path[i+1]) ))
+            '''             
             for e in self.edge_flow:
                 self.graph.update_flow(e[0], e[1], self.edge_flow.get(e))
+            '''
             
             print('\r\ntime {}:  flow:{}'.format(t, self.edge_flow))
             self.edge_flow_history.append( dict(self.edge_flow) )
@@ -191,9 +194,11 @@ class SimTrans_Simulator(object):
                 f_path = path_list[ flow_list.index(f) ]
                 for i in range(0, len(f_path)-1):
                     self.edge_flow.update( {(f_path[i],f_path[i+1]): self.edge_flow.get( (f_path[i],f_path[i+1]) )+ f } )
-             
+                    self.graph.update_flow(f_path[i],f_path[i+1], self.edge_flow.get( (f_path[i],f_path[i+1]) ))
+            ''' 
             for e in self.edge_flow:
                 self.graph.update_flow(e[0], e[1], self.edge_flow.get(e))
+            '''
             
             print('\r\ntime {}:  flow:{}'.format(t, self.edge_flow))
             self.edge_flow_history.append( dict(self.edge_flow) )
@@ -204,10 +209,10 @@ class SimTrans_Simulator(object):
         
         p1 = np.array( p.get_decision(self.ori ,self.des ) )
         p2 = np.array( self.graph.get_paths_cost(self.ori ,self.des) )
-        print( p1.dot(p2) )
+        # print( p1.dot(p2) )
         self.conv_cost = p1.dot(p2)
 
-    def get_convergence(self):
+    def get_convergence_cost(self):
         return self.conv_cost
 
     def run_once(self, s_time, e_time, init_num, step_num):
@@ -219,8 +224,32 @@ class SimTrans_Simulator(object):
         else:
             self.simulator_normal(s_time, e_time, init_num, step_num)
 
+    def run_equi_sensitivity(self, start_time, end_time, m_f, m_t, m_c, edge_list=[], m_t_range=[], m_c_range=1):
+        self.run_once(start_time, end_time, 0, 1)
+        flow_ori = self.edge_decision_history[-1]
+        step = 0.0001        
+        gradient = np.zeros(( len(flow_ori), len(flow_ori) ))
+        print(gradient)
 
-    def run_sensitivity(self, start_time, end_time, m_f, m_t, m_c, edge_list=[], m_t_range=[], m_c_range=1):
+        for idx in range(0, len(flow_ori)):
+            f_path = self.graph.get_all_paths(self.ori, self.des)[idx]
+            
+            for i in range(0, len(f_path)-1):
+                self.edge_flow.update( {(f_path[i],f_path[i+1]): self.edge_flow.get( (f_path[i],f_path[i+1]) )+ step } )
+                self.graph.update_flow(f_path[i],f_path[i+1], self.edge_flow.get( (f_path[i],f_path[i+1]) ))
+            
+            c_list = [ np.exp(-i) for i in self.graph.get_paths_cost(self.ori, self.des) ]
+            flow_new = [ float( i/sum(c_list)) for i in c_list ]
+            gradient[idx] = np.array([ (flow_new[i]-flow_ori[i])/step for i in range(0, len(flow_ori)) ])
+            print( [ flow_new[i]-flow_ori[i] for i in range(0, len(flow_ori)) ] )
+
+        print(gradient)
+        fro_norm = np.linalg.norm( gradient-np.eye(len(flow_ori)) )
+        print(fro_norm)
+        
+        
+
+    def run_cost_sensitivity(self, start_time, end_time, m_f, m_t, m_c, edge_list=[], m_t_range=[], m_c_range=1):
         for e in edge_list:
             self.plot_num = self.plot_num + 1
             plt.figure(self.plot_num)
@@ -239,7 +268,7 @@ class SimTrans_Simulator(object):
                     #self.SimTrans_Simulator(g, 0, 6)
                     self.set_mode('wardrop')
                     self.run_once(start_time, end_time, 0, 1)
-                    c_cost.append(self.get_convergence())
+                    c_cost.append(self.get_convergence_cost())
 
                 plt.plot(k, c_cost, marker=next(linecycler), color='k', label='$a={}$'.format(e_m_t))
                 
