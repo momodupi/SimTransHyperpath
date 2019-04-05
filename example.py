@@ -53,8 +53,7 @@ def main():
         [0,0,0,0,0,5,17],#4
         [0,0,0,0,5,0,22],#5
         [0,0,0,0,0,0,0]#6
-    ])
-        
+    ])  
 
     # create a graph
     g.create_graph(g_m)
@@ -66,12 +65,11 @@ def main():
     # set the simulator with graph 
     m = SimTrans_Simulator(g, 0, 6)
 
-    # initial passengers: 5
-    # arriving passengers at each time: 1
-    # running time: 3600
+    # starting time: 0
+    # ending time: 30
     # simulator mode: wardrop graph without transit time
     start_time = 0
-    end_time = 25
+    end_time = 30
     m.set_mode('wardrop')
     m.run_once(start_time, end_time, 0, 1)
 
@@ -81,14 +79,17 @@ def main():
     m.plot_all_paths_decision(start_time, end_time)
 
     # sensitivity simulation
-    # edges: [(0,6),(0,2),(2,5),(0,1)]
+    # edges: [(0,6),(0,2),(0,1)]
     # range of a: [0,1,0,5,1]
     # range of b: -10:+10    
-    edge_list = [(0,6),(0,2),(2,5),(0,1)]
+    end_time = 20
+    edge_list = [(0,6),(0,2),(0,1)]
     a_list = [0.1,0.5,1]
+    #a_list = np.linspace(0, 1, num=20)
     b_range = 10
-    m.run_sensitivity(start_time, end_time, m_f, m_t, m_c, edge_list, a_list, b_range)
-    
+    #m.run_sensitivity(start_time, end_time, m_f, m_t, m_c, edge_list, a_list, b_range)
+    m.run_cost_sensitivity(start_time, end_time, m_f, m_t, m_c, edge_list, a_list, b_range)    
+
     m.plot_show()
 
 
