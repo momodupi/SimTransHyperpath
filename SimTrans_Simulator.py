@@ -132,7 +132,6 @@ class SimTrans_Simulator(object):
             for e in self.edge_flow:
                 self.graph.update_flow(e[0], e[1], self.edge_flow.get(e))
             '''
-            
             print('\r\ntime {}:  flow:{}'.format(t, self.edge_flow))
             self.edge_flow_history.append( dict(self.edge_flow) )
             print('cost:{}'.format(self.graph.get_paths_cost(self.ori ,self.des)))
@@ -166,7 +165,6 @@ class SimTrans_Simulator(object):
             for e in self.edge_flow:
                 self.graph.update_flow(e[0], e[1], self.edge_flow.get(e))
             '''
-            
             print('\r\ntime {}:  flow:{}'.format(t, self.edge_flow))
             self.edge_flow_history.append( dict(self.edge_flow) )
             print('cost:{}'.format(self.graph.get_paths_cost(self.ori ,self.des)))
@@ -179,7 +177,7 @@ class SimTrans_Simulator(object):
         for i in self.graph.get_all_edges():
             for e in i:
                 self.edge_flow.update( {(e[0], e[1][0]): self.graph.get_flow(e[0], e[1][0])} )
-        print(self.edge_flow)
+        #print(self.edge_flow)
         
         p = SimTrans_Passenger(self.graph, self.ori ,self.des, s_time)
 
@@ -199,7 +197,6 @@ class SimTrans_Simulator(object):
             for e in self.edge_flow:
                 self.graph.update_flow(e[0], e[1], self.edge_flow.get(e))
             '''
-            
             print('\r\ntime {}:  flow:{}'.format(t, self.edge_flow))
             self.edge_flow_history.append( dict(self.edge_flow) )
             print('cost:{}'.format(self.graph.get_paths_cost(self.ori ,self.des)))
@@ -209,7 +206,6 @@ class SimTrans_Simulator(object):
         
         p1 = np.array( p.get_decision(self.ori ,self.des ) )
         p2 = np.array( self.graph.get_paths_cost(self.ori ,self.des) )
-        # print( p1.dot(p2) )
         self.conv_cost = p1.dot(p2)
 
     def get_convergence_cost(self):
@@ -224,6 +220,39 @@ class SimTrans_Simulator(object):
         else:
             self.simulator_normal(s_time, e_time, init_num, step_num)
 
+    def run_sensitivity(self, start_time, end_time, m_f, m_t, m_c, edge_list=[], m_t_range=[], m_c_range=1):
+        '''simulation of flow sensitivity'''
+        for e in edge_list:
+            self.plot_num = self.plot_num + 1
+            plt.figure(self.plot_num)
+            linecycler = cycle(self.markers)
+            #k = np.arange(m_c[e[0]][e[1]]-m_c_range, m_c[e[0]][e[1]]+m_c_range)
+            plot_size = 100
+            k = np.linspace(m_c[e[0]][e[1]]-m_c_range, m_c[e[0]][e[1]]+m_c_range, num=plot_size)
+            for e_m_t in m_t_range:
+                flow_history = []
+                for e_m_c in k:
+                    self.edge_flow = {}
+                    self.edge_flow_history = []
+                    self.edge_cost_history = []
+                    self.edge_decision_history = []
+                    self.p_list = []
+                    self.graph.update_w_all_edges(m_f, m_t, m_c)
+                    self.graph.update_w_edge(e[0], e[1], self.graph.convert_w_edge(0, e_m_t, e_m_c))
+                    #self.SimTrans_Simulator(g, 0, 6)
+                    self.set_mode('wardrop')
+                    self.run_once(start_time, end_time, 0, 1)
+                    flow_history.append( np.array(self.edge_decision_history[-1]) )
+                flow_ori = flow_history[int(plot_size/2)]
+                norm_history = [ np.linalg.norm( i - flow_ori ) for i in flow_history ]    
+                plt.plot(k, norm_history, marker=next(linecycler), color='k', label='$a={}$'.format(e_m_t))
+                
+            plt.legend(loc='lower left', framealpha=0.1)
+            plt.xlabel('b of {}'.format((e[0], e[1])))
+            plt.ylabel('norm of turbulence')
+            plt.title('Equilibrium turbulence with edge {}'.format((e[0], e[1])))
+            plt.savefig('equi{}{}.png'.format(e[0], e[1]), dpi=600)
+
     def run_equi_sensitivity(self, start_time, end_time, m_f, m_t, m_c, edge_list=[], m_t_range=[], m_c_range=1):
         self.run_once(start_time, end_time, 0, 1)
         flow_ori = self.edge_decision_history[-1]
@@ -233,7 +262,7 @@ class SimTrans_Simulator(object):
 
         for idx in range(0, len(flow_ori)):
             f_path = self.graph.get_all_paths(self.ori, self.des)[idx]
-            
+
             for i in range(0, len(f_path)-1):
                 self.edge_flow.update( {(f_path[i],f_path[i+1]): self.edge_flow.get( (f_path[i],f_path[i+1]) )+ step } )
                 self.graph.update_flow(f_path[i],f_path[i+1], self.edge_flow.get( (f_path[i],f_path[i+1]) ))
@@ -246,18 +275,18 @@ class SimTrans_Simulator(object):
         print(gradient)
         fro_norm = np.linalg.norm( gradient-np.eye(len(flow_ori)) )
         print(fro_norm)
-        
-        
 
     def run_cost_sensitivity(self, start_time, end_time, m_f, m_t, m_c, edge_list=[], m_t_range=[], m_c_range=1):
         for e in edge_list:
             self.plot_num = self.plot_num + 1
             plt.figure(self.plot_num)
             linecycler = cycle(self.markers)
-            k = np.arange(m_c[e[0]][e[1]]-m_c_range, m_c[e[0]][e[1]]+m_c_range)
+            #k = np.arange(m_c[e[0]][e[1]]-m_c_range, m_c[e[0]][e[1]]+m_c_range)
+            plot_size = 50
+            k = np.linspace(m_c[e[0]][e[1]]-m_c_range, m_c[e[0]][e[1]]+m_c_range, num=plot_size)
             for e_m_t in m_t_range:
                 c_cost = []
-                for e_m_c in range(m_c[e[0]][e[1]]-m_c_range, m_c[e[0]][e[1]]+m_c_range):
+                for e_m_c in k:
                     self.edge_flow = {}
                     self.edge_flow_history = []
                     self.edge_cost_history = []
@@ -277,9 +306,3 @@ class SimTrans_Simulator(object):
             plt.ylabel('average cost')
             plt.title('Average cost of changing constant cost of {}'.format((e[0], e[1])))
             plt.savefig('avrgcst{}{}.png'.format(e[0], e[1]), dpi=600)
-
-
-
-
-
-            
